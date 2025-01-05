@@ -1,0 +1,8 @@
+streamlit
+pandas
+sqlalchemy
+fpdf
+dotenv
+colorama
+openpyxl
+psycopg2
