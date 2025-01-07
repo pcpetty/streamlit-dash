@@ -18,7 +18,12 @@ logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 from sqlalchemy import text
 import uuid
-
+import hashlib
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from psycopg2 import connect, Error
+from psycopg2.extras import RealDictCursor
+import logging
 # ------------------------------------------------------------------------------------------------
 # LOAD ENVIRONMENT VARIABLES # ------------------------------------------------------------------------------------------------
 load_dotenv()  # Load environment variables
@@ -40,6 +45,151 @@ try:
         print("Database connection successful.")
 except Exception as e:
     print(f"Database connection failed: {e}")
+
+# ------------------------------------------------------------------------------------------------
+# Risk Ranger Login # ------------------------------------------------------------------------------------------------
+# Configure logging
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Load environment variables
+load_dotenv()
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_NAME = os.getenv("DB_NAME", "risk_ranger")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Validate environment variables
+if not all([DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DATABASE_URL]):
+    st.error("Missing database configuration. Ensure all environment variables are set correctly.")
+
+# Database connection using psycopg2
+def db_connect():
+    try:
+        conn = connect(
+            host=DB_HOST,
+            database=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        return conn
+    except Error as e:
+        st.error(f"Database connection failed: {e}")
+        return None
+
+# Initialize database
+def initialize_users_table():
+    conn = db_connect()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                role TEXT NOT NULL
+            );
+        """)
+        cur.execute("SELECT COUNT(*) FROM users;")
+        if cur.fetchone()[0] == 0:
+            cur.execute(
+                """
+                INSERT INTO users (username, password, role)
+                VALUES ('admin', crypt('superpassword', gen_salt('bf')), 'superuser');
+                """
+            )
+        conn.commit()
+        st.success("User table initialized successfully.")
+    except Exception as e:
+        st.error(f"Failed to initialize users table: {e}")
+    finally:
+        conn.close()
+
+# Authenticate user
+def authenticate_user(username, password):
+    conn = db_connect()
+    if not conn:
+        return None
+    try:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute(
+            "SELECT role FROM users WHERE username = %s AND password = crypt(%s, password);",
+            (username, password)
+        )
+        result = cur.fetchone()
+        return result["role"] if result else None
+    except Exception as e:
+        st.error(f"Authentication failed: {e}")
+        return None
+    finally:
+        conn.close()
+
+# Add user
+def add_user(username, password, role):
+    conn = db_connect()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO users (username, password, role)
+            VALUES (%s, crypt(%s, gen_salt('bf')), %s);
+            """,
+            (username, password, role)
+        )
+        conn.commit()
+        st.success(f"User {username} added successfully!")
+    except Exception as e:
+        st.error(f"Failed to add user: {e}")
+    finally:
+        conn.close()
+
+# Fetch all users
+def fetch_all_users():
+    conn = db_connect()
+    if not conn:
+        return []
+    try:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT id, username, role FROM users;")
+        users = cur.fetchall()
+        return users
+    except Exception as e:
+        st.error(f"Failed to fetch users: {e}")
+        return []
+    finally:
+        conn.close()
+
+# Render role-based dashboard
+def render_dashboard(role):
+    st.title("Risk Ranger Dashboard")
+    if role == "superuser":
+        st.subheader("Superuser Dashboard")
+        add_user_form()
+        st.write("All Users:")
+        st.table(fetch_all_users())
+    elif role == "safety_generalist":
+        st.subheader("Safety Generalist Dashboard")
+        st.write("Create and Edit Reports")
+    elif role == "liability_adjuster":
+        st.subheader("Liability Adjuster Dashboard")
+        st.write("Adjust Claims and Financials")
+
+# Add user form
+def add_user_form():
+    st.subheader("Add a New User")
+    new_username = st.text_input("New Username")
+    new_password = st.text_input("New Password", type="password")
+    new_role = st.selectbox("Role", ["superuser", "safety_generalist", "liability_adjuster"])
+    if st.button("Create User"):
+        if new_username and new_password:
+            add_user(new_username, new_password, new_role)
+        else:
+            st.error("Both username and password are required.")
 
 # ------------------------------------------------------------------------------------------------
 # GET DATA FROM PSQL # ------------------------------------------------------------------------------------------------
@@ -455,7 +605,7 @@ def get_company_info():
     """
     prefix = "company_info"
     st.subheader("Company Information")
-    is_saf = get_yes_no("Is this an SAF (Somewhere Air Freight) accident?", base_key=f"{prefix}_is_saf_{uuid.uuid4()}")
+    is_saf = get_yes_no("Is this an SAF (Somewhere Air Freight) accident?", base_key=f"{prefix}_is_saf")
     
     if is_saf:
         saf_branch = st.selectbox(
@@ -974,6 +1124,34 @@ def main():
     elif page == "Tutorial":
         tutorial()
         
+# Main application
 if __name__ == "__main__":
+    # Initialize session state
+    if "authenticated" not in st.session_state:
+        st.session_state["authenticated"] = False
+        st.session_state["username"] = None
+        st.session_state["role"] = None
+    # Login form
+    if not st.session_state["authenticated"]:
+        st.title("Risk Ranger Login")
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        login_button = st.button("Login")
+        if login_button:
+            role = authenticate_user(username, password)
+            if role:
+                st.session_state["authenticated"] = True
+                st.session_state["username"] = username
+                st.session_state["role"] = role
+                st.success(f"Welcome, {username} ({role})")
+            else:
+                st.error("Invalid credentials")
+    # Render dashboard if authenticated
+    if st.session_state["authenticated"]:
+        render_dashboard(st.session_state["role"])
+    # Initialize database
+    if st.button("Initialize Database"):
+        initialize_users_table()
+
     main()
 # ------------------------------------------------------------------------------------------------
