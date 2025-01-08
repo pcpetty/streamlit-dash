@@ -174,3 +174,46 @@ def fetch_accident_reports():
     except Exception as e:
         logging.error(f"Failed to fetch accident reports: {e}")
         return []
+
+# ------------------------------------------------------------------------------------------------
+# Delete user # ------------------------------------------------------------------------------------------------
+def delete_user(user_id):
+    """
+    Deletes a user from the database based on their user ID.
+    """
+    conn = db_connect()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
+        conn.commit()
+        st.success(f"User with ID {user_id} deleted successfully!")
+    except Exception as e:
+        st.error(f"Failed to delete user: {e}")
+    finally:
+        conn.close()
+
+# ------------------------------------------------------------------------------------------------
+# Update user # ------------------------------------------------------------------------------------------------
+def update_user(user_id, new_username=None, new_password=None, new_role=None):
+    """
+    Updates a user's details in the database. Only the provided fields will be updated.
+    """
+    conn = db_connect()
+    if not conn:
+        return
+    try:
+        cur = conn.cursor()
+        if new_username:
+            cur.execute("UPDATE users SET username = %s WHERE id = %s;", (new_username, user_id))
+        if new_password:
+            cur.execute("UPDATE users SET password = crypt(%s, gen_salt('bf')) WHERE id = %s;", (new_password, user_id))
+        if new_role:
+            cur.execute("UPDATE users SET role = %s WHERE id = %s;", (new_role, user_id))
+        conn.commit()
+        st.success(f"User with ID {user_id} updated successfully!")
+    except Exception as e:
+        st.error(f"Failed to update user: {e}")
+    finally:
+        conn.close()

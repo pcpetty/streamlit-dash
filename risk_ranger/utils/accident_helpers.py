@@ -2,7 +2,6 @@
 import streamlit as st 
 import uuid 
 from utils.helpers import text_input_with_default, get_yes_no
-from utils.database import get_engine
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import textwrap

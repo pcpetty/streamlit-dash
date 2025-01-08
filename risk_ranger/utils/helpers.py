@@ -56,11 +56,11 @@ def get_or_set_session_data(key, default):
 # ------------------------------------------------------------------------------------------------
 # display_logo -------------------------------------------------------------------------------------------------
 def display_logo():
-    st.image("RRLOGOBANNER.png")
+    st.image("static/uploads/RRLOGOSMALL.png")
 # LOGO SIDEBAR # ------------------------------------------------------------------------------------------------
 # Add a smaller logo to the sidebar
 st.sidebar.image(
-    "RRLOGOSMALL.png")
+    "static/uploads/RRLOGOSMALL.png")
 # LOGO FOOTER --------------------------------------------------------------------------------------------------
 # Add a banner at the footer
 st.markdown(

@@ -73,11 +73,32 @@ if uploaded_file:
     st.success(f"File saved to {file_path}")
 
 
-with open("report.pdf", "rb") as f:
-    st.download_button("Download PDF", f, file_name="accident_report.pdf", mime="application/pdf")
+# with open("report.pdf", "rb") as f:
+#     st.download_button("Download PDF", f, file_name="accident_report.pdf", mime="application/pdf")
 
 
-photo_path = f"uploads/{uploaded_photo.name}"
-with open(photo_path, "wb") as f:
-    f.write(uploaded_photo.getbuffer())
-cur.execute("INSERT INTO accident_photos (report_id, photo_path) VALUES (%s, %s)", (report_id, photo_path))
+# photo_path = f"uploads/{uploaded_photo.name}"
+# with open(photo_path, "wb") as f:
+#     f.write(uploaded_photo.getbuffer())
+# cur.execute("INSERT INTO accident_photos (report_id, photo_path) VALUES (%s, %s)", (report_id, photo_path))
+
+# def edit_accident_report(report_id):
+#         query = "SELECT * FROM accident_reports WHERE id = %s"
+#         report = fetch_data(query, (report_id,))
+#         if report:
+#             report = report[0]  # Assuming single record
+#             st.text_input("Accident Date", value=report["accident_date"], key=f"edit_accident_date_{report_id}")
+#             st.text_area("Description", value=report["description"], key=f"edit_description_{report_id}")
+#             if st.button(f"Save Changes for Report {report_id}"):
+#                 update_query = """
+#                     UPDATE accident_reports
+#                     SET accident_date = %s, description = %s
+#                     WHERE id = %s
+#                 """
+#                 update_params = (
+#                     st.session_state[f"edit_accident_date_{report_id}"],
+#                     st.session_state[f"edit_description_{report_id}"],
+#                     report_id
+#                 )
+#                 save_data(update_query, update_params)
+#                 st.success(f"Updated report {report_id} successfully!")
