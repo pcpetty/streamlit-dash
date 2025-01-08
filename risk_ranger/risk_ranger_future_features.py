@@ -64,3 +64,20 @@ if st.button("Download Report as PDF"):
     else:
         st.error("No accident report data to generate PDF.")
 # -------------------------------------------------------------------------
+
+uploaded_file = st.file_uploader("Upload Accident Photo", type=["jpg", "png"])
+if uploaded_file:
+    file_path = f"uploads/{uploaded_file.name}"
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"File saved to {file_path}")
+
+
+with open("report.pdf", "rb") as f:
+    st.download_button("Download PDF", f, file_name="accident_report.pdf", mime="application/pdf")
+
+
+photo_path = f"uploads/{uploaded_photo.name}"
+with open(photo_path, "wb") as f:
+    f.write(uploaded_photo.getbuffer())
+cur.execute("INSERT INTO accident_photos (report_id, photo_path) VALUES (%s, %s)", (report_id, photo_path))
