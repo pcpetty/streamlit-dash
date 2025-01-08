@@ -1,6 +1,6 @@
 # RISK RANGER STREAMLIT VERSION
 import streamlit as st
-from pages import login, admin, accident_report, driver_lookup, vehicle_lookup, flt_lookup, upload_photos
+from pages import login, admin, home, accident_report, driver_lookup, vehicle_lookup, flt_lookup, upload_photos, safety_generalist, liability_adjuster
 from utils.database import initialize_users_table
 
 # Role-to-Page Mapping
@@ -12,12 +12,14 @@ ROLE_PAGE_MAPPING = {
 # Page Function Mapping
 PAGE_FUNCTION_MAPPING = {
     "Login": login.render_login,
-    "Home": lambda: st.markdown("Welcome to Risk Ranger!"),
+    "Home": home.home,
     "Accident Report Form": accident_report.render_form,
     "Driver Lookup": driver_lookup.render_driver_lookup,
     "Vehicle Lookup": vehicle_lookup.render_vehicle_lookup,
     "FLT Lookup": flt_lookup.render_flt_lookup,
     "Admin": admin.render_admin_dashboard,
+    "Safety Generalist": safety_generalist.safety_generalist_dashboard,
+    "Liability Adjuster": liability_adjuster.liability_adjuster_dashboard,
     "Upload Photos": upload_photos.render_upload_photos,
 }
 def check_authentication():
