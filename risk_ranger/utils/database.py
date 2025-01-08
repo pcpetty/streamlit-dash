@@ -1,6 +1,5 @@
 # Libraries and Modules
-from sqlalchemy import create_engine
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 import logging
 import os
@@ -8,8 +7,6 @@ logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 from psycopg2.extras import RealDictCursor
 from psycopg2 import connect, Error
-import logging
-from sqlalchemy import text
 import pandas as pd
 import streamlit as st
 

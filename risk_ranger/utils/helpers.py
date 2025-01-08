@@ -53,14 +53,13 @@ def get_or_set_session_data(key, default):
     if key not in st.session_state:
         st.session_state[key] = default
     return st.session_state[key]
-# ------------------------------------------------------------------------------------------------
+# ---------------------------------------utils/RRLOGOSMALL.png---------------------------------------------------------
 # display_logo -------------------------------------------------------------------------------------------------
 def display_logo():
-    st.image("static/uploads/RRLOGOSMALL.png")
+    st.image("utils/RRLOGOSMALL.png")
 # LOGO SIDEBAR # ------------------------------------------------------------------------------------------------
 # Add a smaller logo to the sidebar
-st.sidebar.image(
-    "static/uploads/RRLOGOSMALL.png")
+st.sidebar.image("utils/RRLOGOSMALL.png")
 # LOGO FOOTER --------------------------------------------------------------------------------------------------
 # Add a banner at the footer
 st.markdown(

@@ -3,11 +3,21 @@
 # Libraries and Modules
 import streamlit as st
 import logging
-from utils.database import db_connect, authenticate_user
+from utils.database import authenticate_user
 from utils.session_state import initialize_session_state, clear_session_state
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+
+# Replace st.experimental_rerun
+def rerun():
+    st.session_state["rerun"] = True
+
+# At the start of your app
+if st.session_state.get("rerun"):
+    st.session_state["rerun"] = False
+    raise st.script_runner.StopExecution
+
 
 def login():
     """
@@ -30,7 +40,7 @@ def login():
             st.session_state["username"] = username
             st.session_state["role"] = role
             st.success(f"Welcome, {username} ({role})")
-            st.experimental_rerun()  # Refresh the page to update session state
+            st.rerun()  # Refresh the page to update session state
         else:
             st.error("Invalid username or password. Please try again.")
     # Handle authenticated state

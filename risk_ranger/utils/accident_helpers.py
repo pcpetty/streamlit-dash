@@ -241,6 +241,103 @@ def get_driver():
         "license_expiry": license_expiry,
         "driver_injury": driver_injury,
     }
+    
+# ------------------------------------------------------------------------------------------------    
+# Enter V1 Driver # ------------------------------------------------------------------------------------------------  
+def v1_driver_info():
+    prefix = "vehicle_one_driver"
+    st.subheader("Driver 1 Info")
+    driver_one_name = text_input_with_default("Driver 1 Name: ", key=f"{prefix}_v1_name_{uuid.uuid4()}")
+    driver_one_phone = text_input_with_default("Phone Number", key=f"{prefix}_driver_one_phone_{uuid.uuid4()}")
+    
+    return {
+        "V1 Name": driver_one_name,
+        "V1 Phone": driver_one_phone
+    }
+# ------------------------------------------------------------------------------------------------
+# CO DRIVER FUNCTION # ------------------------------------------------------------------------------------------------
+def v1_codriver():
+    prefix = "codriver"
+    codriver_present = get_yes_no("Does V1 have a co-driver?:", base_key=f"{prefix}_codriver_yes")
+    if codriver_present:
+        codriver_name = text_input_with_default("Enter co-driver name:", key=f"{prefix}_codriver_name_{uuid.uuid4()}").strip()
+        codriver_phone = text_input_with_default("Enter co-driver phone number:", key=f"{prefix}_codriver_phone_{uuid.uuid4()}").strip()
+        codriver_injury = get_yes_no("Is the co-driver injured?:", base_key=f"{prefix}_codriver_injury")
+        return {
+            "codriver_present": codriver_present,
+            "codriver_name": codriver_name,
+            "codriver_phone": codriver_phone,
+            "codriver_injury": codriver_injury,
+        }
+    return {"codriver_present": False}
+# ------------------------------------------------------------------------------------------------    
+# Enter V1 Vehicle # ------------------------------------------------------------------------------------------------
+def v1_vehicle_info():
+    prefix = "vehicle_one_information"
+    st.subheader("Vehicle 1 Info")
+    vehicle_one_unit_number = text_input_with_default("Unit Number:", key=f"{prefix}_vehicle_one_unit_number{uuid.uuid4()}")
+    vehicle_one_make = text_input_with_default("Make:", key=f"{prefix}_vehicle_one_make{uuid.uuid4()}")
+    vehicle_one_model = text_input_with_default("Model:", key=f"{prefix}_vehicle_one_model_{uuid.uuid4()}")
+    vehicle_one_year = text_input_with_default("Year:", key=f"{prefix}_vehicle_one_year_{uuid.uuid4()}")
+    vehicle_one_plate_number = text_input_with_default("Plate Number:", key=f"{prefix}_vehicle_one_plate_number_{uuid.uuid4()}")
+    
+    return {
+        "V1 Unit Number": vehicle_one_unit_number,
+        "V1 Make": vehicle_one_make,
+        "V1 Model": vehicle_one_model,
+        "V1 Year": vehicle_one_year,
+        "V1 Plate": vehicle_one_plate_number,
+    }
+# ------------------------------------------------------------------------------------------------    
+# Enter V2 Driver # ------------------------------------------------------------------------------------------
+def v2_driver_info():
+    prefix = "vehicle_two_driver"
+    st.subheader("Driver 2 Info")
+    driver_two_name = text_input_with_default("Driver 2 Name: ", key=f"{prefix}_v2_name_{uuid.uuid4()}")
+    driver_two_phone = text_input_with_default("Phone Number", key=f"{prefix}_driver_two_phone_{uuid.uuid4()}")
+    
+    return {
+        "V1 Name": driver_two_name,
+        "V1 Phone": driver_two_phone
+    }
+# -------------------------------------------------------------------------------    
+# V2 PASSENGER INFO FUNCTION # ------------------------------------------------------------------------------------------------
+def get_v2_passengers():
+    prefix = "v2_passenger_key"
+    st.subheader("V2 Passenger Info")
+    has_passengers = get_yes_no("Does V2 have passengers?:", base_key=f"{prefix}_v2_passengers")
+    passengers = []
+    if has_passengers:
+        num_passengers = text_input_with_default("How many passengers are there?", key=f"{prefix}_num_passengers_{uuid.uuid4()}")
+        try:
+            num_passengers = text_input_with_default(num_passengers)
+        except ValueError:
+            num_passengers = 0
+        for i in range(num_passengers):
+            st.text(f"Passenger {i + 1}:")
+            passenger_name = text_input_with_default("Enter passenger name", key=f"{prefix}_passenger_name_{uuid.uuid4()}")
+            passenger_injury = get_yes_no("Is the passenger injured?", base_key=f"{prefix}_passenger_injury")
+            passengers.append({"name": passenger_name, "injured": passenger_injury})
+    return {"has_passengers": has_passengers, "passengers": passengers}
+
+# ------------------------------------------------------------------------------------------------    
+# Enter V2 Vehicle # ------------------------------------------------------------------------------------------------
+def v2_vehicle_info():
+    prefix = "vehicle_2_information"
+    st.subheader("Vehicle 2 Info")
+    vehicle_two_unit_number = text_input_with_default("Unit Number:", key=f"{prefix}_vehicle_two_unit_number{uuid.uuid4()}")
+    vehicle_two_make = text_input_with_default("Make:", key=f"{prefix}_vehicle_two_make{uuid.uuid4()}")
+    vehicle_two_model = text_input_with_default("Model:", key=f"{prefix}_vehicle_two_model_{uuid.uuid4()}")
+    vehicle_two_year = text_input_with_default("Year:", key=f"{prefix}_vehicle_two_year_{uuid.uuid4()}")
+    vehicle_two_plate_number = text_input_with_default("Plate Number:", key=f"{prefix}_vehicle_two_plate_number_{uuid.uuid4()}")
+    
+    return {
+        "V2 Unit Number": vehicle_two_unit_number,
+        "V2 Make": vehicle_two_make,
+        "V2 Model": vehicle_two_model,
+        "V2 Year": vehicle_two_year,
+        "V2 Plate": vehicle_two_plate_number,
+    }
 # ------------------------------------------------------------------------------------------------    
 # GET OR CREATE VEHICLE FUNCTION - DB OPS # ------------------------------------------------------------------------------------------------  
 def get_or_create_vehicle(plate_number, make, model, year, color):

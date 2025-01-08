@@ -1,7 +1,10 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": "risk_ranger"
+		},
+		{
+			"path": "sgvenv3"
 		}
 	],
 	"settings": {

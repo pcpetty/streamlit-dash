@@ -11,16 +11,16 @@ ROLE_PAGE_MAPPING = {
 }
 # Page Function Mapping
 PAGE_FUNCTION_MAPPING = {
-    "Login": login.render_login,
+    "Login": login.login,
     "Home": home.home,
-    "Accident Report Form": accident_report.render_form,
-    "Driver Lookup": driver_lookup.render_driver_lookup,
-    "Vehicle Lookup": vehicle_lookup.render_vehicle_lookup,
-    "FLT Lookup": flt_lookup.render_flt_lookup,
+    "Accident Report Form": accident_report.accident_form,
+    "Driver Lookup": driver_lookup.driver_lookup,
+    "Vehicle Lookup": vehicle_lookup.vehicle_lookup,
+    "FLT Lookup": flt_lookup.flt_lookup,
     "Admin": admin.render_admin_dashboard,
     "Safety Generalist": safety_generalist.safety_generalist_dashboard,
     "Liability Adjuster": liability_adjuster.liability_adjuster_dashboard,
-    "Upload Photos": upload_photos.render_upload_photos,
+    "Upload Photos": upload_photos.upload_photo,
 }
 def check_authentication():
     return "authenticated" in st.session_state and st.session_state["authenticated"]

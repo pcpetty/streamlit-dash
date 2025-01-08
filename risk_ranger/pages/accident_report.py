@@ -3,7 +3,7 @@ import streamlit as st
 from utils.database import save_data
 from utils.pdf_generator import generate_pdf
 from utils.accident_helpers import post_accident_testing
-from utils.accident_helpers import post_accident_testing_timeline, citation_info
+from utils.accident_helpers import post_accident_testing_timeline, citation_info, v1_driver_info, v1_vehicle_info, v2_driver_info, v2_vehicle_info, get_v2_passengers, v1_codriver
 from utils.accident_helpers import (
     get_company_info, get_additional_remarks, load_information, get_police_information, get_tow_information, get_vehicle, get_driver, collect_person_reporting_details, accident_or_incident, dot_recordable, post_accident_testing, followup_needed, injury_details
 )
@@ -29,10 +29,12 @@ def accident_form():
     
     # Section 2: Driver and Vehicle Information
     st.header("Driver and Vehicle Information")
-    v1_driver = get_driver("V1 Driver")
-    v1_vehicle = get_vehicle("V1 Vehicle")
-    v2_driver = get_driver("V2 Driver")
-    v2_vehicle = get_vehicle("V2 Vehicle")
+    v1_driver = v1_driver_info()
+    v1_passenger = v1_codriver()
+    v1_vehicle = v1_vehicle_info()
+    v2_driver = v2_driver_info()
+    v2_passenger = get_v2_passengers()
+    v2_vehicle = v2_vehicle_info()
     
     # Section 3: Additional Details
     st.header("Additional Details")
@@ -59,7 +61,9 @@ def accident_form():
     st.write(f"Follow-Up: {followup_info}")
     st.write(f"Weather: {weather_info}, Road: {road_conditions}")
     st.write(f"Driver 1: {v1_driver}, Vehicle 1: {v1_vehicle}")
+    st.write(f"Co-Driver: {v1_passenger}")
     st.write(f"Driver 2: {v2_driver}, Vehicle 2: {v2_vehicle}")
+    st.write(f"V2 Passenger(s): {v2_passenger}")
     st.write(f"Towing Information: {tow_info}")
     st.write(f"Police Information: {police_info}")
     st.write(f"Citation Info: {citation}")

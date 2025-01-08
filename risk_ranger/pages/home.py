@@ -6,7 +6,7 @@ def home():
     """
     # App Branding
     st.title("Welcome to Risk Ranger")
-    st.image("static/uploads/RRLOGOSMALL.png", use_column_width=True)  # Replace with your app logo
+    st.image("utils/RRLOGOSMALL.png")
     st.subheader("Your Safety Management Companion")
     st.markdown("""
         Risk Ranger streamlines accident reporting, driver and vehicle lookups, and claim management.
