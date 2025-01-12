@@ -1,6 +1,6 @@
 # **Risk Ranger: A Streamlit-Based Accident Reporting and Management System**
 
-![Risk Ranger Logo](assets/RRLOGOSMALL.png)
+![RRLOGOBANNER(1)](https://github.com/user-attachments/assets/2cd403ab-0b0d-445f-8927-683948e37097)
 
 ## **Overview**
 **Risk Ranger** is a comprehensive web-based accident reporting and management system built with Streamlit. It integrates seamlessly with PostgreSQL to provide a robust backend, modular utility functions, and a streamlined user experience for safety management professionals. This project combines technical proficiency, creativity, and problem-solving skills to tackle real-world challenges in accident reporting and claims management.
