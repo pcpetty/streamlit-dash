@@ -47,4 +47,6 @@ def login():
     if st.session_state["authenticated"]:
         st.success(f"Logged in as: {st.session_state['username']} ({st.session_state['role']})")
         st.button("Logout", on_click=clear_session_state)
+
+
 # ------------------------------------------------------------------------------------------------

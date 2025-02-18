@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def home():
     """
     Displays the home page with an overview of the application.
